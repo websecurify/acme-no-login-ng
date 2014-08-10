@@ -1,0 +1,94 @@
+doctype html
+
+//- --
+
+html
+	head
+		script(src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js")
+
+		//- --
+
+		script.
+			var ng = angular.module('ng')
+
+			// ---
+
+			ng.controller('Login', function ($scope, $http) {
+				$scope.isAuthenticated = false;
+
+				// ---
+
+				$scope.login = function () {
+					var req = $http({
+						method: 'POST',
+
+						// ---
+
+						url: '/',
+
+						// ---
+
+						data: {
+							user: this.user,
+							pass: this.pass
+						}
+					});
+
+					// ---
+
+					var self = this;
+
+					// ---
+
+					req.then(
+						function (event) {
+							self.isAuthenticated = true;
+
+							// ---
+
+							self.message = event.data.message;
+
+							// ---
+
+							self.$apply();
+						},
+
+						function (event) {
+							self.isAuthenticated = false;
+
+							// ---
+
+							self.message = event.data.message;
+
+							// ---
+
+							self.$apply();
+						}
+					);
+				};
+			}); 
+
+	//- --
+
+	body(ng-app)
+		div(ng-controller="Login")
+			h1(ng-show="!isAuthenticated") No Login
+
+			//- --
+
+			p(ng-show="!isAuthenticated") I Dare you! I double Dare you!!
+
+			//- --
+
+			input(ng-show="!isAuthenticated", ng-model="user", type="text", name="user", autocomplete="off")
+			input(ng-show="!isAuthenticated", ng-model="pass", type="password", name="pass", autocomplete="off")
+
+			//- --
+
+			button(ng-show="!isAuthenticated", ng-click="login()") Login
+
+			//- --
+
+			p(ng-show="message") {{ message }}
+
+//- --
